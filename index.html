@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости лида</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .group {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="group">
+        <h3>Введите данные:</h3>
+        <input type="number" id="C" placeholder="Цена лида (например, 2)">
+        <input type="number" id="approval_rate" placeholder="Процент аппрува (%)">
+        <input type="number" id="payout" placeholder="Выплата за лид">
+        <input type="number" id="trash_rate" placeholder="Процент треша (%)">
+        <input type="number" id="ROI" placeholder="ROI (%)">
+    </div>
+
+    <div class="group">
+        <button onclick="calculateROI()">Рассчитать ROI</button>
+        <button onclick="calculateC()">Рассчитать цену лида</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        function calculateROI() {
+            const C = parseFloat(document.getElementById('C').value);
+            const A = parseFloat(document.getElementById('approval_rate').value);
+            const P = parseFloat(document.getElementById('payout').value);
+            const T = parseFloat(document.getElementById('trash_rate').value);
+
+            if ([C, A, P, T].some(isNaN)) {
+                alert("Заполните все поля: Цена лида, Аппрув, Выплата, Треш");
+                return;
+            }
+
+            const roi = ((((1 - T/100) * (A/100) * P) - C) / C) * 100;
+            document.getElementById('ROI').value = roi.toFixed(2);
+            document.getElementById('result').innerHTML = `ROI: <b>${roi.toFixed(2)}%</b>`;
+        }
+
+        function calculateC() {
+            const ROI = parseFloat(document.getElementById('ROI').value);
+            const A = parseFloat(document.getElementById('approval_rate').value);
+            const P = parseFloat(document.getElementById('payout').value);
+            const T = parseFloat(document.getElementById('trash_rate').value);
+
+            if ([ROI, A, P, T].some(isNaN)) {
+                alert("Заполните все поля: ROI, Аппрув, Выплата, Треш");
+                return;
+            }
+
+            const C = ((1 - T/100) * (A/100) * P) / ((ROI/100) + 1);
+            document.getElementById('C').value = C.toFixed(2);
+            document.getElementById('result').innerHTML = `Цена лида: <b>${C.toFixed(2)}</b>`;
+        }
+    </script>
+</body>
+</html>
